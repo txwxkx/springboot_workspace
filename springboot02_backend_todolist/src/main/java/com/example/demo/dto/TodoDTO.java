@@ -6,19 +6,35 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /*
-@Data : @NoArgsConstructor, @AllArgsConstructor, @Getter, @Setter 을 합친 녀석
+CREATE TABLE todolist(
+id number  PRIMARY KEY,
+completed number(1) DEFAULT 0,
+todoname  VARCHAR2(100) NOT NULL);
 
+
+CREATE SEQUENCE todo_id_seq
+START WITH 1
+INCREMENT By 1
+NOCACHE
+NOCYCLE;
+
+
+INSERT INTO todolist VALUES(todo_id_seq.nextval, 0, '여행');
+commit;
+SELECT * FROM todolist;
 */
-//@Data 모든 종류 constructor 생성, getter/ setter 생성
+
+/*
+@Data : @NoArgsConstructor, @AllArgsConstructor, @Getter, @Setter, 
+		@ToString, @EqualAndHashCode를 합쳐놓은 어노테이션이다.
+*/
 
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Getter
 @Setter
 public class TodoDTO {
 	private int id;
 	private int completed;
 	private String todoname;
-
 }

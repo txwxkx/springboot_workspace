@@ -11,9 +11,9 @@ public class DemoController {
 	@ResponseBody
 	@RequestMapping("/")
 	public String home() {
-		System.out.println("Hello boot!!!");
+		System.out.println("Hello Boot!!!");
 		System.out.println("program");
-		return "Hello boot!!";
+		return "Hello Boot!!";
 	}
 
 }

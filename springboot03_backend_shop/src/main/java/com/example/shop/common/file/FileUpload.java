@@ -18,7 +18,7 @@ public class FileUpload {
 		//중복파일명을 처리하기 위한 난수 발생
 		UUID random = UUID.randomUUID();
 		
-//		File ff = new File(urlPath(filePath), random + "_" + fileName);
+		//File ff = new File(urlPath(filePath), random + "_" + fileName);
 		File ff = new File(filePath, random + "_" + fileName);
 		
 		try {

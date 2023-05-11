@@ -17,6 +17,14 @@ public class MembersDTO {
 	public MembersDTO() {
 
 	}
+	
+	public String getAuthRole() {
+		return authRole;
+	}
+	
+	public void setAuthRole(String authRole) {
+		this.authRole = authRole;
+	}
 
 	public String getMemberEmail() {
 		return memberEmail;
@@ -64,14 +72,6 @@ public class MembersDTO {
 
 	public void setRememberEmail(boolean rememberEmail) {
 		this.rememberEmail = rememberEmail;
-	}
-	
-	public String getAuthRole() {
-		return authRole;
-	}
-	
-	public void setAuthRole(String authRole) {
-		this.authRole = authRole;
 	}
 	
 	//매치가 되면 true, 매치가 되지 않으면 false

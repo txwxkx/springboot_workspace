@@ -7,12 +7,12 @@
 <mapper namespace="com.example.shop.board.dao.BoardDAO">
     <select id = "count" resultType = "int">
        SELECT count(*) FROM board
+       
     </select>
     
     <resultMap type = "BoardDTO" id = "listSelect" autoMapping="true">
     	<association property="membersDTO" javaType = "MembersDTO">
     		<result column = "memberName" property = "memberName"/>
-    		
     	</association>
     </resultMap>
     
@@ -26,20 +26,18 @@
 	   			ORDER BY ref DESC, re_step ASC)a)b
 	   	WHERE b.rm >= #{startRow} AND b.rm <= #{endRow}
 	   ]]>
-    </select>	
+    </select>
     
     <!--<select id = "list" parameterType="PageDTO" resultType="BoardDTO">
        <![CDATA[
        SELECT b.*
 	   	FROM(SELECT rownum AS rm, a.*
-	   		FROM(SELECT b.*
-	   			FROM board b
+	   		FROM(SELECT b.* FROM board b
 	   			ORDER BY ref DESC, re_step ASC)a)b
 	   	WHERE b.rm >= #{startRow} AND b.rm <= #{endRow}
 	   ]]>
-    </select>	-->																				
-       
-    <!--  ref == 0 제목글  ref ==1 답변글 -->
+    </select>-->	
+    																	
     <insert id = "save" parameterType="BoardDTO">
        INSERT INTO board(num, subject, reg_date, readcount, ref, re_step, re_level, content, ip, upload, memberEmail)
        VALUES(board_num_seq.nextval, #{subject}, sysdate, 0,
@@ -51,9 +49,7 @@
              #{ref},
           </otherwise>
        </choose>
-       #{re_step}, #{re_level}, #{content, jdbcType=VARCHAR}, #{ip}, #{upload, jdbcType=VARCHAR},#{memberEmail, jdbcType=VARCHAR}
-       
-        )
+       #{re_step}, #{re_level}, #{content, jdbcType=VARCHAR}, #{ip}, #{upload, jdbcType=VARCHAR}, #{memberEmail, jdbcType=VARCHAR})
     </insert>
     
     <update id = "readCount" parameterType = "int">
@@ -62,10 +58,10 @@
     	WHERE num=#{num}
     </update>
     
-    
     <resultMap type="BoardDTO" id="contentSelect" autoMapping="true">
     	<association property="membersDTO" javaType = "MembersDTO">
     		<result column = "memberName" property="memberName"/>
+    		<result column = "memberEmail" property = "memberEmail" />
     	</association>
     </resultMap>
     
@@ -73,9 +69,8 @@
     	SELECT b.*, m.memberName
 		FROM board b, members m
 		WHERE b.memberEmail = m.memberEmail(+)
-		AND num = #{num}					  
+		and num = #{num}					  
     </select>
-    
     
     <!--<select id = "content" parameterType = "int" resultType = "BoardDTO">
     	SELECT b.*
@@ -83,14 +78,11 @@
 		WHERE num = #{num}					  
     </select>-->
     
-    
-    <update id="reStepCount" parameterType = "BoardDTO">
+    <update id = "reStepCount" parameterType = "BoardDTO">
     	UPDATE board
     	SET re_step = re_step + 1
-    	WHERE ref=#{ref} AND re_step > #{re_step}  <!--같은 그룹이고 re_step 값이 클 때 -->
+    	WHERE ref=#{ref} AND re_step > #{re_step}
     </update>
-    
-   
     
     <update id = "update" parameterType = "BoardDTO">
     	UPDATE board

@@ -59,13 +59,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
  		//3. JWT토큰을 검증해서 정상적인 사용자인지, 권한이 맞는지 확인
  		//JWT 토큰 검증을 해서 정상적인 사용자인지 확인=> 정상적인 요청인 경우
  		String jwtToken = request.getHeader("Authorization").replace("Bearer ","");
- 		String memberEmail = JWT.require(Algorithm.HMAC512("mySecurityCos")).build().verify(jwtToken).getClaim("memberEmail").asString();
- 		System.out.println("memberEmail:" + memberEmail);
+ 		String username = JWT.require(Algorithm.HMAC512("mySecurityCos")).build().verify(jwtToken).getClaim("memberEmail").asString();
+ 		System.out.println("username:" + username);
  		
  		//서명이 정상적으로 처리되었으면
- 		if(memberEmail!=null) {
+ 		if(username!=null) {
  			//spring security가 수행해주는 권한 처리를 위해 아래와 같이 토큰을 만들어 Authentication객체를 강제로 만들고 세션에 넣어준다.
- 			MembersDTO user = userRepository.selectByEmail(memberEmail);
+ 			MembersDTO user = userRepository.selectByEmail(username);
  			PrincipalDetails principalDetails = new PrincipalDetails(user);
  			
  			Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());

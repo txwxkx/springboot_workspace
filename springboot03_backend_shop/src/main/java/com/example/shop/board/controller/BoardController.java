@@ -2,7 +2,6 @@ package com.example.shop.board.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,34 +33,39 @@ import com.example.shop.board.dto.PageDTO;
 import com.example.shop.board.service.BoardService;
 import com.example.shop.common.file.FileUpload;
 
-@CrossOrigin(origins = {"http://localhost:3000"})
+//@CrossOrigin(origins = {"http://localhost:3000"})
+@CrossOrigin("*")
+
 @RestController
 public class BoardController {
 	
 	@Autowired
 	private BoardService boardService;
-	          
+	
 	@Value("${spring.servlet.multipart.location}")
-	private String filePath;
+	private String filePath; 
 	
 	@Autowired
 	private PageDTO pdto;
-	
+
 	private int currentPage;
 	
-	
 	public BoardController() {
-		
+
 	}
 	
 	// http://localhost:8090/board/list/1
 	
-	@GetMapping("/board/list/{currentPage}")
+	@GetMapping("/board/list/{currentPage}")	
 	public Map<String, Object> listExecute(@PathVariable("currentPage") int currentPage, PageDTO pv) {
 		Map<String, Object> map = new HashMap<>();
 		int totalRecord = boardService.countProcess();
 		if(totalRecord>=1) {
-			this.currentPage = currentPage;
+//			if(pv.getCurrentPage()==0)
+//				this.currentPage = 1;
+				this.currentPage = currentPage;
+//			else
+//				this.currentPage = pv.getCurrentPage();
 			
 			this.pdto = new PageDTO(this.currentPage, totalRecord);
 			
@@ -69,16 +73,18 @@ public class BoardController {
 			map.put("pv", this.pdto);
 		}
 		return map;
-	}
+	}//end listExecute()
 	
-	//@RequestBody : json => 자바객체로 보낼 때
-	// @ResponseBody : 자바객체를 => json 으로 보낼 때
-	// @Pathvariable : /board/list/:num => /board/list/{num}
-	// @RequestParam : /board/list?num=value => /board/list?num=1 => /board/list
-	// multipart/form-data : @requerstbody 선언없이 그냥 받음 boardDTO dto
-	@PostMapping("/board/write")
+	// RequestBody : json => 자바 객체
+	// ResponseBody : 자바 객체 =>json
+	// @PathVariable : /borad/list/:num => /board/list/{num}
+	// @RequestParam : /borad/list?num=value => /board/list?num=1 => /board/list
+	// multipart/form-data : @RequestBody 선언없이 그냥 받음 BoardDTO dto
+	@PostMapping(value = "/board/write")
 	public String writeProExecute(BoardDTO dto, PageDTO pv, HttpServletRequest req, HttpSession session) {
 		MultipartFile file = dto.getFilename();
+		
+		//System.out.println(dto.getMembersDTO().getMemberName());
 		
 		//파일 첨부가 있으면...
 		if(file!=null && !file.isEmpty()) {
@@ -88,18 +94,19 @@ public class BoardController {
 		
 		dto.setIp(req.getRemoteAddr());
 		
+//		AuthInfo authInfo = (AuthInfo)session.getAttribute("authInfo");
+//		dto.setMemberEmail(authInfo.getMemberEmail());
+		
 		boardService.insertProcess(dto);
 		
 		// 답변글이면
 		if(dto.getRef()!=0) {
-//			ratt.addAttribute("currentPage", pv.getCurrentPage());
+			//ratt.addAttribute("currentPage", pv.getCurrentPage());
 			return String.valueOf(pv.getCurrentPage());
-		}else {
+		} else {
 			return String.valueOf(1);
 		}
-		
-//		return "redirect:/board/list.do";
-		
+		//return "redirect:/board/list";
 	}
 	
 	@GetMapping("/board/view/{num}")
@@ -113,11 +120,10 @@ public class BoardController {
 		if(file!=null && !file.isEmpty()) {
 			UUID random = FileUpload.saveCopyFile(file, filePath);
 			dto.setUpload(random + "_" + file.getOriginalFilename());
-			//C:\k_digital\download\temp 경로에 첨부파일 저장
+			//d:\\download\\temp 경로에 첨부파일 저장
 			file.transferTo(new File(random + "_" + file.getOriginalFilename()));
 		}
-		
-		boardService.updateProcess(dto, filePath);	
+		boardService.updateProcess(dto, filePath);
 	}
 	
 	@DeleteMapping("/board/delete/{num}")
@@ -127,22 +133,21 @@ public class BoardController {
 	
 	@GetMapping("/board/contentdownload/{filename}")
 	public ResponseEntity<Resource> downloadExecute(@PathVariable("filename") String filename) throws IOException {
+
+		String fileName = filename.substring(filename.indexOf("_") + 1); 
 		
-		String fileName = filename.substring(filename.indexOf("_") + 1);
-		
-		//파일명이 한글일 시 인코딩한다.
-		String str = URLEncoder.encode(fileName, "UTF-8");
-		
-		// 원본파일명에 공백이 있을 때 + 표시가 되므로 공백으로 처리해줌
+		//파일명이 한글일 때 인코딩 작업을 한다.
+		String str = URLEncoder.encode(filename, "UTF-8");
+		//원본파일명에서 공백이 있을 때, +로 표시가 되므로 공백으로 처리해줌.
 		str = str.replaceAll("\\+", "%20");
-		Path path = Paths.get(filePath+"\\"+filename);
+		Path path = Paths.get(filePath + "\\" + filename);
 		Resource resource = new InputStreamResource(Files.newInputStream(path));
+		System.out.println("resource:" + resource.getFilename());
 		
 		return ResponseEntity.ok()
-				.header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename="+str+";")
-				.body(resource);
+		   .header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")
+		   .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + str + ";")
+		   .body(resource);
 	}
-	
 
-}
+}//end class

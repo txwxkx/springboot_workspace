@@ -14,5 +14,5 @@ import lombok.ToString;
 public class User {
 	private String memberEmail;
 	private String memberPass;
-
-}
+	
+}//end class

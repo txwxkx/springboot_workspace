@@ -10,9 +10,9 @@ import com.example.shop.board.dao.BoardDAO;
 import com.example.shop.board.dto.BoardDTO;
 import com.example.shop.board.dto.PageDTO;
 
+
 @Service
 public class BoardServiceImp implements BoardService {
-	
 	@Autowired
 	private BoardDAO boardDao;
 	
@@ -86,7 +86,6 @@ public class BoardServiceImp implements BoardService {
 
 	@Override
 	public String fileSelectprocess(int num) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

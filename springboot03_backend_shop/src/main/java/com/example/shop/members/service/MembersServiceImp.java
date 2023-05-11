@@ -1,6 +1,5 @@
 package com.example.shop.members.service;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,15 +11,12 @@ import com.example.shop.members.dto.MembersDTO;
 
 @Service
 public class MembersServiceImp implements MembersService {
+	
 	@Autowired
 	private MembersDAO membersDao;
 	
 	public MembersServiceImp() {
 
-	}
-	
-	public void setMembersDao(MembersDAO membersDao) {
-		this.membersDao = membersDao;
 	}
 
 	@Override

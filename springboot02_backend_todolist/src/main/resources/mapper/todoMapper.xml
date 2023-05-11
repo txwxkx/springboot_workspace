@@ -3,10 +3,8 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
-    <!--네임스페이스는 인터페이스 경로값과 동일하게 설정-->
 <mapper namespace="com.example.demo.dao.TodoDAO">
-	<!--아이디는 인터페이스 메소드명과 같게 설정-->
-	<select id="getToList" resultType="TodoDTO">
+	<select id="getTodoList" resultType="TodoDTO">
 		SELECT * FROM todolist
 		ORDER BY id
 	</select>
@@ -21,15 +19,10 @@
 		SET completed = #{completed}
 		WHERE id = #{id}
 	</update>
-   
-   <delete id="deleteTodoList" parameterType="int">
-	   DELETE FROM todolist
-	   WHERE id = #{id}
-   </delete>
+	
+	<delete id="deleteTodoList" parameterType="int">
+		DELETE FROM todolist
+		WHERE id = #{id}
+	</delete>
+	
 </mapper>
- 
- 
- 
- 
- 
- 

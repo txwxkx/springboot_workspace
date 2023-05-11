@@ -10,32 +10,29 @@ import com.example.shop.members.dao.MembersDAO;
 import com.example.shop.members.dto.MembersDTO;
 
 @Service
-public class PrincipalDetailsService implements UserDetailsService{
+public class PrincipalDetailsService implements UserDetailsService {
 	
 	@Autowired
 	private MembersDAO membersDAO;
 	
 	public PrincipalDetailsService() {
-		// TODO Auto-generated constructor stub
+
 	}
 	
-	// 1. AuthenticationProvider에서 loadUserByName(String username)을 호출한다.
-	// 2. loadUserByName(String username)에서는 DB에서 username에 해당하는 데이터를 검색한 후 UserDetails에 담는다.
-	// 3. AuthenticationProvider 에서 UserDetails를 받아 Authentication에 담고 결과적으로 Security Session에 담
-
+	//1. AuthenticationProvider에서 loadUserByUsername(String username)을 호출한다.
+	//2. loadUserByUsername(String username)에서는 DB에서 username에 해당하는 데이터를 검색하여 UserDeatails에 담아
+	//3. AuthenticationProvider에서 UserDetails 받아서 Authentication에 저장을 함으로써 결국 Seucurity Session에
+	
 	@Override
 	public UserDetails loadUserByUsername(String memberEmail) throws UsernameNotFoundException {
-		
-//		System.out.println("loadUserByUsername:" + memberEmail);
+		//System.out.println("loadUserByUsername:" + memberEmail);
 		MembersDTO userEntity = membersDAO.selectByEmail(memberEmail);
 		
-//		System.out.println("userEntity:" + userEntity.getMemberName());
-		
-		if(userEntity == null) {
+		if(userEntity==null) {
 			throw new UsernameNotFoundException(memberEmail);
 		}
 		
 		return new PrincipalDetails(userEntity);
 	}
-
-}
+	
+}//end class
